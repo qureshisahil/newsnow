@@ -70,7 +70,9 @@ class ArticleListTile extends StatelessWidget {
                       Text(
                         article.description!,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).brightness == Brightness.dark 
+                              ? Colors.grey.shade400 
+                              : Colors.grey.shade600,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

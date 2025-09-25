@@ -16,6 +16,14 @@ class _SearchScreenState extends State<SearchScreen> {
   final FocusNode _focusNode = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() {}); // Rebuild when text changes to show/hide clear button
+    });
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     _focusNode.dispose();

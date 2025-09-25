@@ -1,4 +1,4 @@
-mport 'dart:convert';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/article.dart';
 import '../utils/constants.dart';

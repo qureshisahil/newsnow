@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/news_provider.dart';
+import '../providers/bookmark_provider.dart';
 import '../widgets/featured_article_card.dart';
 import '../widgets/article_list_tile.dart';
 import '../widgets/category_chips.dart';
@@ -110,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Column(
           children: [
-            Icon(
+            const Icon(
               Icons.error_outline,
               color: Colors.red,
               size: 48,
@@ -197,12 +199,24 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) => _ArticleBottomSheet(article: article),
     );
   }
+
+  Future<void> _launchURL(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    }
+  }
 }
 
 class _ArticleBottomSheet extends StatelessWidget {
   final dynamic article;
 
   const _ArticleBottomSheet({required this.article});
+
+  Future<void> _launchURL(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -283,7 +297,7 @@ class _ArticleBottomSheet extends StatelessWidget {
                             const SizedBox(width: 8),
                           ],
                           Text(
-                            article.timeAgo,
+                            article.timeAgo ?? '',
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Colors.grey,
                             ),
@@ -303,7 +317,7 @@ class _ArticleBottomSheet extends StatelessWidget {
                             child: ElevatedButton.icon(
                               onPressed: () {
                                 Navigator.pop(context);
-                                // Launch URL
+                                _launchURL(article.url);
                               },
                               icon: const Icon(Icons.open_in_new),
                               label: const Text('Read Full Article'),
