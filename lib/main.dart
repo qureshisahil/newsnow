@@ -1,3 +1,4 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -60,7 +61,8 @@ class MyApp extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
-      cardTheme: CardTheme(
+      // THE FIX IS HERE: Changed CardTheme to CardThemeData
+      cardTheme: CardThemeData(
         elevation: 2,
         shadowColor: Colors.black.withOpacity(0.1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -85,7 +87,8 @@ class MyApp extends StatelessWidget {
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
-      cardTheme: CardTheme(
+      // THE FIX IS HERE: Changed CardTheme to CardThemeData
+      cardTheme: CardThemeData(
         elevation: 4,
         shadowColor: Colors.black.withOpacity(0.3),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
