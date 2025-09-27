@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'providers/news_provider.dart';
-import 'providers/theme_provider.dart';
-import 'providers/bookmark_provider.dart';
-import 'screens/main_screen.dart';
+import 'package:newsnow/providers/news_provider.dart';
+import 'package:newsnow/providers/theme_provider.dart';
+import 'package:newsnow/providers/bookmark_provider.dart';
+import 'package:newsnow/screens/main_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'NewsNow',
             debugShowCheckedModeBanner: false,
-            theme: _buildLightTheme(),
-            darkTheme: _buildDarkTheme(),
+            theme: _buildTheme(Brightness.light),
+            darkTheme: _buildTheme(Brightness.dark),
             themeMode: themeProvider.themeMode,
             home: const MainScreen(),
           );
@@ -38,61 +38,70 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  ThemeData _buildLightTheme() {
-    return ThemeData(
-      brightness: Brightness.light,
-      colorScheme: const ColorScheme.light(
-        primary: Color(0xFF1976D2),
-        secondary: Color(0xFF03DAC6),
-        surface: Color(0xFFFAFAFA),
-        onSurface: Color(0xFF121212),
-        background: Color(0xFFFFFFFF),
+  ThemeData _buildTheme(Brightness brightness) {
+    var baseTheme = ThemeData(brightness: brightness);
+    var isDark = brightness == Brightness.dark;
+
+    var colorScheme = isDark
+        ? const ColorScheme.dark(
+            primary: Color(0xFF64B5F6),
+            secondary: Color(0xFF80CBC4),
+            surface: Color(0xFF1E1E1E),
+            background: Color(0xFF121212),
+            onPrimary: Colors.black,
+            onSecondary: Colors.black,
+            onSurface: Colors.white,
+            onBackground: Colors.white,
+          )
+        : const ColorScheme.light(
+            primary: Color(0xFF1976D2),
+            secondary: Color(0xFF009688),
+            surface: Colors.white,
+            background: Color(0xFFF5F5F5),
+            onPrimary: Colors.white,
+            onSecondary: Colors.white,
+            onSurface: Colors.black,
+            onBackground: Colors.black,
+          );
+
+    return baseTheme.copyWith(
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: colorScheme.background,
+      textTheme: GoogleFonts.poppinsTextTheme(baseTheme.textTheme).apply(
+        bodyColor: colorScheme.onBackground,
+        displayColor: colorScheme.onBackground,
       ),
-      scaffoldBackgroundColor: const Color(0xFFF5F5F5),
-      textTheme: GoogleFonts.interTextTheme(),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
+      appBarTheme: AppBarTheme(
+        backgroundColor: colorScheme.surface,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
-        iconTheme: IconThemeData(color: Colors.black87),
+        systemOverlayStyle: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+        iconTheme: IconThemeData(color: colorScheme.onSurface),
         titleTextStyle: TextStyle(
-          color: Colors.black87,
+          color: colorScheme.onSurface,
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
       ),
-      // THE FIX IS HERE: Changed CardTheme to CardThemeData
       cardTheme: CardThemeData(
-        elevation: 2,
-        shadowColor: Colors.black.withOpacity(0.1),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: isDark ? 4 : 2,
+        shadowColor: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: colorScheme.surface,
       ),
-    );
-  }
-
-  ThemeData _buildDarkTheme() {
-    return ThemeData(
-      brightness: Brightness.dark,
-      colorScheme: const ColorScheme.dark(
-        primary: Color(0xFF64B5F6),
-        secondary: Color(0xFF03DAC6),
-        surface: Color(0xFF1E1E1E),
-        onSurface: Color(0xFFE0E0E0),
-        background: Color(0xFF121212),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: colorScheme.surface,
+        selectedItemColor: colorScheme.primary,
+        unselectedItemColor: Colors.grey,
+        elevation: 10,
+        type: BottomNavigationBarType.fixed,
       ),
-      scaffoldBackgroundColor: const Color(0xFF0F0F0F),
-      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFF1E1E1E),
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
-      // THE FIX IS HERE: Changed CardTheme to CardThemeData
-      cardTheme: CardThemeData(
-        elevation: 4,
-        shadowColor: Colors.black.withOpacity(0.3),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        color: const Color(0xFF1E1E1E),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+        ),
       ),
     );
   }
